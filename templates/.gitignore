@@ -1,0 +1,5 @@
+wa6.pdf
+*.docx
+!graded.docx
+*.aux
+*.log
