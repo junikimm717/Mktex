@@ -8,7 +8,6 @@ TEMPLATE=std
 gen_template() {
     cp -r $TEMPLATE_DIR/templates/$TEMPLATE $1
     cd $1
-    pwd
     [ -f template.tex ] && mv template.tex $1.tex
     [ -f template.md ] && mv template.md $1.md
     [ -f template.bib ] && mv template.bib $1.bib
@@ -32,7 +31,11 @@ get_manual() {
     less $TEMPLATE_DIR/readme.txt
 }
 
-echo $@
+if [ $# -eq 0 ]; then
+    get_manual
+    exit 0
+fi
+
 for arg in $@; do
     case $arg in 
         -h)
