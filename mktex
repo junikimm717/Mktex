@@ -1,26 +1,26 @@
 #!/bin/bash
 
-TEMPLATE_DIR=$(dirname $(realpath $0))
+TEMPLATE_DIR="$(dirname "$(realpath "$0")")"
 
 TEMPLATE=std
 
 # function to generate templates.
 gen_template() {
-    cp -r $TEMPLATE_DIR/templates/$TEMPLATE $1
-    cd $1
-    [ -f template.tex ] && mv template.tex $1.tex
-    [ -f template.md ] && mv template.md $1.md
-    [ -f template.bib ] && mv template.bib $1.bib
-    for F in $(ls -A); do
-        if [ -d $F ]; then
+    cp -r "$TEMPLATE_DIR"/templates/"$TEMPLATE" "$1"
+    cd "$1" || exit
+    [ -f template.tex ] && mv template.tex "$1.tex"
+    [ -f template.md ] && mv template.md "$1.md"
+    [ -f template.bib ] && mv template.bib "$1.bib"
+    for F in * .*; do
+        if [ -d "$F" ]; then
             continue
         fi
         case $OSTYPE in
             darwin*)
-                sed -i '' "s/template/$1/g" $F
+                sed -i '' "s/template/$1/g" "$F"
             ;;
             linux*)
-                sed -i "s/template/$1/g" $F
+                sed -i "s/template/$1/g" "$F"
             ;;
         esac
     done
@@ -28,7 +28,7 @@ gen_template() {
 }
 
 get_manual() {
-    less $TEMPLATE_DIR/readme.txt
+    less "$TEMPLATE_DIR"/readme.txt
 }
 
 if [ $# -eq 0 ]; then
@@ -36,8 +36,8 @@ if [ $# -eq 0 ]; then
     exit 0
 fi
 
-for arg in $@; do
-    case $arg in 
+for arg in "$@"; do
+    case "$arg" in 
         -h)
             get_manual
             exit
@@ -56,7 +56,7 @@ for arg in $@; do
         ;;
         *)
             echo "generating $arg from template $TEMPLATE"
-            gen_template $arg
+            gen_template "$arg"
         ;;
     esac
 done
