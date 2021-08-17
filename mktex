@@ -54,6 +54,9 @@ for arg in "$@"; do
         -essay)
             TEMPLATE=essay
         ;;
+        -bio)
+            TEMPLATE=bio
+        ;;
         *)
             echo "generating $arg from template $TEMPLATE"
             gen_template "$arg"
