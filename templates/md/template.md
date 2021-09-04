@@ -1,5 +1,8 @@
 ---
-author: Author
-title: title
-geometry: margin=1in
+author:
+- Author
+title: 
+- title
+geometry: 
+- margin=1in
 ---
