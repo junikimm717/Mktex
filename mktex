@@ -38,10 +38,7 @@ fi
 
 for arg in "$@"; do
     case "$arg" in 
-        -h)
-            get_manual
-            exit
-        ;;
+
         -std)
             TEMPLATE=std
         ;;
@@ -56,6 +53,13 @@ for arg in "$@"; do
         ;;
         -bio)
             TEMPLATE=bio
+        ;;
+        -h)
+            get_manual
+        ;;
+        -*)
+            echo "Invalid option $arg"
+            exit 1
         ;;
         *)
             echo "generating $arg from template $TEMPLATE"

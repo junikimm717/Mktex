@@ -11,6 +11,7 @@ some of the options:
 -md: markdown template (for quick notes)
 -stat: ap statistics stuff (or pythontex)
 -essay: english essays
+-bio: AP biology labs
 
 note: unless you specify, std will be the default template
 that is used. For instance, if the command is as follows:
