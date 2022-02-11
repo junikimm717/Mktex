@@ -1,5 +1,5 @@
 %.pdf:
-	pdflatex $*.tex
+	latexmk -pdf $*.tex
 
 %.docx:
 	pandoc -o $*.docx $*.tex
