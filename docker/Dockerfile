@@ -1,6 +1,8 @@
 # Dockerfile for building papers
 FROM pandoc/core:latest
 
+COPY ./entrypoint.sh /entrypoint.sh
+
 WORKDIR /files
 
 RUN apk update
@@ -16,4 +18,4 @@ RUN apk add biber \
     python3 \
     make
 
-ENTRYPOINT ["make", "clean", "all"]
+ENTRYPOINT ["/entrypoint.sh"]

@@ -94,7 +94,20 @@ build() {
     echo "The build image does not locally exist. Run \`mktex pull\` to install it."
     exit 127
   fi
-  docker run -u "$(id -u):$(id -g)" -v  "$(pwd)":/files --rm "$DOCKER_IMAGE"
+  docker run -u "$(id -u):$(id -g)" -it -v  "$(pwd)":/files --rm "$DOCKER_IMAGE"
+  exit
+}
+
+watch() {
+  if ! command -V docker > /dev/null; then
+    echo "docker does not exist on your system."
+    exit 127
+  fi
+  if ! docker image ls | grep "$DOCKER_IMAGE" > /dev/null; then
+    echo "The build image does not locally exist. Run \`mktex pull\` to install it."
+    exit 127
+  fi
+  docker run -u "$(id -u):$(id -g)" -it -v  "$(pwd)":/files --rm "$DOCKER_IMAGE" watch
   exit
 }
 
@@ -122,6 +135,11 @@ case "$1" in
     build
     exit;
   ;;
+  watch)
+    shift;
+    watch
+    exit;
+  ;;
   lstemplates|l)
     shift;
     lstemplates;
@@ -136,7 +154,6 @@ case "$1" in
     create "$@";
     exit;
   ;;
-
   *)
     echo "Invalid verb $1."
     exit 127;

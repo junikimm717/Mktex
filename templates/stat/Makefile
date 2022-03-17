@@ -29,5 +29,8 @@ clean: junk
 
 junk:
 	rm -rf *.aux *.log
+
+watch:
+	latexmk -pdf -pvc
 	
-.PHONY: pdf docx all clean junk
+.PHONY: pdf docx all clean junk watch

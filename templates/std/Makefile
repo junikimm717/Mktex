@@ -22,5 +22,9 @@ junk:
 # if you wish to compile word targets as well, put "docx" into the "all" target below.
 
 all: pdf junk
+
+
+watch:
+	latexmk -pdf -pvc
 	
-.PHONY: %.docx %.pdf pdf docx all clean junk
+.PHONY: %.docx %.pdf pdf docx all clean junk watch
