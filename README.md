@@ -6,8 +6,7 @@ environment.
 
 ## Requirements
 
-It should work in any UNIX-like operating systems. Send in an issue if it
-doesn't.
+You need to have curl and tar on your system to install any premade templates.
 
 You may want to install docker to utilize the dependency-free build system.
 

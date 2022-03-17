@@ -1,74 +1,140 @@
 #!/bin/sh
 
-TEMPLATE_DIR="$(dirname "$(realpath "$0")")"
-# default template
-TEMPLATE=std
-# 
+# docker image to be pulled.
 DOCKER_IMAGE=junikimm717/mktex-build
+# directory where mktex resides.
+MKTEX_DIR="$(dirname "$(realpath "$0")")"
+# directory where templates are stored.
+TEMPLATE_DIR="$MKTEX_DIR/templates"
 
-# function to generate templates.
+# function to generate a single directory from a template.
 gen_template() {
-    if test -e "$1"; then
-      echo "$1 already exists.";
-      exit 1;
+  TEMPLATE="$2"
+  DIR="$1"
+  if test -e "$DIR"; then
+    echo "$DIR already exists.";
+    exit 1;
+  fi
+  cp -R "$TEMPLATE_DIR"/"$TEMPLATE" "$DIR"
+  # move into our newly created directory
+  cd "$1" || exit
+  for FILE in template.*; do
+    NEW="$(echo "$FILE" | sed "s/template/$DIR/")"
+    mv "$FILE" "$NEW"
+  done
+  # replace all instances of "template" with the name of our directory.
+  for F in * .*; do
+    if [ -d "$F" ]; then
+        continue
     fi
-    cp -r "$TEMPLATE_DIR"/templates/"$TEMPLATE" "$1"
-    cd "$1" || exit
-    for FILE in template.*; do
-      NEW="$(echo "$FILE" | sed "s/template/$1/")"
-      mv "$FILE" "$NEW"
-    done
-    for F in * .*; do
-        if [ -d "$F" ]; then
-            continue
+    sed "s/template/$DIR/g" "$F" > "$F.tmp"
+    mv "$F.tmp" "$F"
+  done
+  # move back out
+  cd ..
+}
+
+# the create function: scans all of the arguments, changing
+# template names and making calls to gen_template.
+create() {
+  # default template
+  TEMPLATE=std
+  while test $# -gt 0; do
+    case "$1" in 
+      -t|--template)
+        shift;
+        # template name is empty
+        if [ -z "$1" ]; then
+          echo "Empty template name."
+          exit 1;
+        # template does not exist
+        elif ! test -d  "$TEMPLATE_DIR"/"$1"; then
+          echo "Template $1 does not exist."
+          exit 1;
         fi
-        sed "s/template/$1/g" "$F" > "$F.tmp"
-        mv "$F.tmp" "$F"
-    done
-    cd ..
+        # set template
+        TEMPLATE="$1"
+        shift;
+      ;;
+      -h|--help)
+        cat "$MKTEX_DIR"/manual/create.txt
+        exit
+      ;;
+      -*)
+        echo "Invalid option $1"
+        exit 1
+      ;;
+      *)
+        # create a template, this is not an option.
+        echo "generating $1 from template $TEMPLATE"
+        gen_template "$1" "$TEMPLATE"
+        shift;
+      ;;
+    esac
+  done
 }
 
-get_manual() {
-    cat "$TEMPLATE_DIR"/manual/main.txt
+# pull the build image from the docker registry
+pull() {
+  if ! command -V docker > /dev/null; then
+    echo "docker does not exist on your system."
+    exit 127
+  fi
+  docker pull "$DOCKER_IMAGE"
+  exit
 }
 
+# build a pdf of a latex template using the pulled docker image.
+build() {
+  if ! command -V docker > /dev/null; then
+    echo "docker does not exist on your system."
+    exit 127
+  fi
+  if ! docker image ls | grep "$DOCKER_IMAGE" > /dev/null; then
+    echo "The build image does not locally exist. Run \`mktex pull\` to install it."
+    exit 127
+  fi
+  docker run -u "$(id -u):$(id -g)" -v  "$(pwd)":/files --rm "$DOCKER_IMAGE"
+  exit
+}
+
+# list all currently available templates
+lstemplates() {
+  cd "$TEMPLATE_DIR" || (echo "$TEMPLATE_DIR is unreachable"; exit 1;)
+  echo *;
+}
+
+# print the help text if no arguments are given.
 if [ $# -eq 0 ]; then
-    get_manual
-    exit 0
+    cat "$MKTEX_DIR"/manual/main.txt
+    exit 1
 fi
 
+# check each of the verb types and execute if there is a match.
 case "$1" in
   pull)
-    if ! type docker > /dev/null; then
-      echo "docker does not exist on your system."
-      exit 127
-    fi
-    docker pull "$DOCKER_IMAGE"
-    exit
+    shift;
+    pull
+    exit;
   ;;
   build)
-    if ! type docker > /dev/null; then
-      echo "docker does not exist on your system."
-      exit 127
-    fi
-    if ! docker image ls | grep -E "$DOCKER_IMAGE" > /dev/null; then
-      echo "The build image does not locally exist. Run \`mktex pull\` to install it."
-      exit 127
-    fi
-    docker run -u "$(id -u):$(id -g)" -v  "$(pwd)":/files --rm "$DOCKER_IMAGE"
-    exit
+    shift;
+    build
+    exit;
   ;;
   lstemplates|l)
-    cd "$TEMPLATE_DIR/templates" || (echo "$TEMPLATE_DIR/templates does not exist"; exit 1;)
-    echo *;
+    shift;
+    lstemplates;
     exit
   ;;
   -h|--help)
-    get_manual
+    cat "$MKTEX_DIR"/manual/main.txt
     exit
   ;;
   create|c)
     shift;
+    create "$@";
+    exit;
   ;;
 
   *)
@@ -76,33 +142,3 @@ case "$1" in
     exit 127;
   ;;
 esac
-
-while test $# -gt 0; do
-    case "$1" in 
-        -t|--template)
-          shift;
-          if [ -z "$1" ]; then
-            echo "Empty template name."
-            exit 1;
-          elif ! test -d  "$TEMPLATE_DIR"/templates/"$1"; then
-            echo "Template $1 does not exist."
-            exit 1;
-          fi
-          TEMPLATE="$1"
-          shift;
-        ;;
-        -h|--help)
-            cat "$TEMPLATE_DIR"/manual/create.txt
-            exit
-        ;;
-        -*)
-            echo "Invalid option $1"
-            exit 1
-        ;;
-        *)
-            echo "generating $1 from template $TEMPLATE"
-            gen_template "$1"
-            shift;
-        ;;
-    esac
-done
