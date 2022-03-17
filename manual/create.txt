@@ -1,0 +1,5 @@
+Usage: mktex create [OPTIONS] DIRS
+
+Options:
+  -h, --help string      display this message
+  -t, --template string  set the template
