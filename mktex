@@ -94,7 +94,7 @@ build() {
     echo "The build image does not locally exist. Run \`mktex pull\` to install it."
     exit 127
   fi
-  docker run -u "$(id -u):$(id -g)" -it -v  "$(pwd)":/files --rm "$DOCKER_IMAGE"
+  docker run -u "$(id -u):$(id -g)" -v  "$(pwd)":/files --rm "$DOCKER_IMAGE"
   exit
 }
 
