@@ -15,7 +15,7 @@ RUN apk add biber \
     texmf-dist-science \
     texmf-dist-pictures \
     texmf-dist-formatsextra \
-    python3 \
+    python3 py3-pygments \
     make
 
 ENTRYPOINT ["/entrypoint.sh"]

@@ -2,6 +2,7 @@
 
 # docker image to be pulled.
 DOCKER_IMAGE=junikimm717/mktex-build
+#DOCKER_IMAGE=mktex-build
 # directory where mktex resides.
 MKTEX_DIR="$(dirname "$(realpath "$0")")"
 # directory where templates are stored.
