@@ -2,10 +2,7 @@
 	pdflatex $*.tex
 
 template.pdf:
-	rm -rf ./pythontex-files-template
-	pdflatex -interaction=nonstopmode template.tex
-	./build.sh ./template.tex
-	pdflatex -interaction=nonstopmode template.tex
+	latexmk -pdf template.tex
 
 %.docx:
 	pandoc -o $*.docx $*.tex

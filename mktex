@@ -2,7 +2,7 @@
 
 # docker image to be pulled.
 DOCKER_IMAGE=junikimm717/mktex-build
-#DOCKER_IMAGE=mktex-build
+DOCKER_IMAGE=mktex-build
 # directory where mktex resides.
 MKTEX_DIR="$(dirname "$(realpath "$0")")"
 # directory where templates are stored.
@@ -126,6 +126,10 @@ fi
 
 # check each of the verb types and execute if there is a match.
 case "$1" in
+  -h|--help)
+    cat "$MKTEX_DIR"/manual/main.txt
+    exit
+  ;;
   pull)
     shift;
     pull
@@ -146,10 +150,6 @@ case "$1" in
     lstemplates;
     exit
   ;;
-  -h|--help)
-    cat "$MKTEX_DIR"/manual/main.txt
-    exit
-  ;;
   create|c)
     shift;
     create "$@";
@@ -157,6 +157,7 @@ case "$1" in
   ;;
   *)
     echo "Invalid verb $1."
-    exit 127;
+    cat "$MKTEX_DIR/manual/main.txt"
+    exit 1;
   ;;
 esac

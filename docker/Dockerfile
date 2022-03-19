@@ -1,13 +1,8 @@
 # Dockerfile for building papers
 FROM pandoc/core:latest
 
-COPY ./entrypoint.sh /entrypoint.sh
-
-WORKDIR /files
-
-RUN apk update
-
-RUN apk add biber \
+RUN apk update && \
+    apk add biber \
     texlive \
     biblatex \
     texmf-dist-bibtexextra \
@@ -15,7 +10,10 @@ RUN apk add biber \
     texmf-dist-science \
     texmf-dist-pictures \
     texmf-dist-formatsextra \
-    python3 py3-pygments \
     make
+
+WORKDIR /files
+
+COPY ./entrypoint.sh /entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh"]

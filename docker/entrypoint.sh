@@ -3,6 +3,9 @@
 # do not make calls to this script from docker.
 # use the mktex wrapper.
 
+#export PYTHONUSERBASE=/files
+cd /files || exit 1;
+
 if [ $# -eq 0 ]; then
   make clean all
   exit
