@@ -111,6 +111,7 @@ pyinstall() {
   case "$1" in
     -h|--help)
       cat "$MKTEX_DIR/manual/pyinstall.txt"
+      exit 1
     ;;
     *)
     docker run -u "$(id -u):$(id -g)" -it -v  "$(pwd)":/files --rm "$DOCKER_IMAGE" \
