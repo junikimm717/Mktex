@@ -21,8 +21,6 @@ all: $(TARGETS)
 
 clean: junk
 	rm -rf $(TARGETS)
-	rm -rf template.pytxcode
-	rm -rf ./pythontex-files-template
 
 junk:
 	ls template.* | grep -vE "^template\.(bib|tex)$$" | xargs -r rm -rf

@@ -1,0 +1,4 @@
+Usage: mktex pyinstall [OPTIONS] [PACKAGES]
+
+Options:
+  -h, --help string      display this message

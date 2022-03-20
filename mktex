@@ -2,7 +2,7 @@
 
 # docker image to be pulled.
 DOCKER_IMAGE=junikimm717/mktex-build
-#DOCKER_IMAGE=mktex-build
+DOCKER_IMAGE=mktex-build
 # directory where mktex resides.
 MKTEX_DIR="$(dirname "$(realpath "$0")")"
 # directory where templates are stored.
@@ -59,7 +59,7 @@ create() {
       ;;
       -h|--help)
         cat "$MKTEX_DIR"/manual/create.txt
-        exit
+        exit 1
       ;;
       -*)
         echo "Invalid option $1"
@@ -99,6 +99,27 @@ build() {
   exit
 }
 
+pyinstall() {
+  if ! command -V docker > /dev/null; then
+    echo "docker does not exist on your system."
+    exit 127
+  fi
+  if ! docker image ls | grep "$DOCKER_IMAGE" > /dev/null; then
+    echo "The build image does not locally exist. Run \`mktex pull\` to install it."
+    exit 127
+  fi
+  case "$1" in
+    -h|--help)
+      cat "$MKTEX_DIR/manual/pyinstall.txt"
+    ;;
+    *)
+    docker run -u "$(id -u):$(id -g)" -it -v  "$(pwd)":/files --rm "$DOCKER_IMAGE" \
+    pyinstall "$@"
+    ;;
+  esac
+  exit
+}
+
 watch() {
   if ! command -V docker > /dev/null; then
     echo "docker does not exist on your system."
@@ -128,7 +149,7 @@ fi
 case "$1" in
   -h|--help)
     cat "$MKTEX_DIR"/manual/main.txt
-    exit
+    exit 1
   ;;
   pull)
     shift;
@@ -144,6 +165,11 @@ case "$1" in
     shift;
     watch
     exit;
+  ;;
+  pyinstall)
+    shift;
+    pyinstall "$@"
+    exit
   ;;
   lstemplates|l)
     shift;

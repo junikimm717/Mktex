@@ -12,7 +12,12 @@ RUN apk update && \
     texmf-dist-formatsextra \
     make
 
+RUN apk add python3 py3-pygments \
+    py3-scipy py3-numpy
+
 WORKDIR /files
+
+RUN ln -s /usr/bin/python3 /usr/bin/python
 
 COPY ./entrypoint.sh /entrypoint.sh
 
