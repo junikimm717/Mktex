@@ -9,4 +9,5 @@ Verbs:
   pull            pull the docker image for building templates
   build           build a template with the docker image
   create,c        create a template based on the arguments.
+  pyinstall       install python dependencies into a virtual env
   lstemplates,l   list all available templates

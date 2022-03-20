@@ -13,7 +13,7 @@ if [ $# -eq 0 ]; then
 fi
 
 pyinstall() {
-  if [ ! -d venv ]; then
+  if [ ! -d mktex-venv ]; then
     echo """
 mktex pyinstall> Creating a new virtual environment in mktex-venv...
     """
