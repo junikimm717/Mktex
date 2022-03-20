@@ -11,14 +11,6 @@ You may want to install docker to utilize the dependency-free build system.
 Otherwise, you should have pandoc, make, and a distribution of latex with
 latexmk.
 
-## Makefile requirements
-
-Every template must have a Makefile with the following phony targets:
-
-1. all (mandatory) - compile all required files
-2. clean (mandatory) - clear all build artefacts
-3. watch (optional) - watch for changes and compile (e.g. `latexmk -pvc`)
-
 ## Installation
 
 Clone the repository. Then add the mktex folder to your
@@ -27,3 +19,22 @@ $PATH variable, as such to your bashrc or zshrc:
 ```sh
 export PATH=(absolute path to mktex):$PATH
 ```
+
+## Makefile requirements
+
+Every template must have a Makefile with the following phony targets:
+
+1. all (mandatory) - compile all required files
+2. clean (mandatory) - clear all build artefacts
+3. watch (optional) - watch for changes and compile (e.g. `latexmk -pvc`)
+
+## Pythontex integration
+
+The mktex docker image should already have numpy and scipy installed (in order
+to not bloat up the image with build dependencies).
+
+In order to install a python dependency, use the `mktex pyinstall` command,
+which installs packages into a virtual environment folder titled `mktex-venv`.
+
+If the virtual environment does not exist in that location, it will be created
+automatically.

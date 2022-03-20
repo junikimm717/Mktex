@@ -1,0 +1,7 @@
+template.*
+!template.tex
+!template.bib
+*.docx
+__pycache__
+pythontex-*
+*.pytxcode

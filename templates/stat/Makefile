@@ -2,10 +2,7 @@
 	pdflatex $*.tex
 
 template.pdf:
-	rm -rf ./pythontex-files-template
-	pdflatex -interaction=nonstopmode template.tex
-	./build.sh ./template.tex
-	pdflatex -interaction=nonstopmode template.tex
+	latexmk -pdf template.tex
 
 %.docx:
 	pandoc -o $*.docx $*.tex
@@ -22,15 +19,15 @@ docx: $(WORDTARGETS)
 
 all: $(TARGETS)
 
-clean: junk
+clean:
 	rm -rf $(TARGETS)
 	rm -rf template.pytxcode
 	rm -rf ./pythontex-files-template
 
-junk:
-	rm -rf *.aux *.log
+wipe: clean
+	ls template.* | grep -vE "\.tex|\.bib" | xargs -r rm -rf
 
 watch:
 	latexmk -pdf -pvc
 	
-.PHONY: pdf docx all clean junk watch
+.PHONY: pdf docx all clean watch wipe
