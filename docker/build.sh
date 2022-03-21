@@ -1,3 +1,3 @@
 #!/bin/sh 
 
-docker build -t mktex-build .
+docker build -t junikimm717/mktex-build:latest .
