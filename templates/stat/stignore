@@ -3,3 +3,4 @@ template.pdf
 __pycache__
 pythontex-*
 *.pytxcode
+mktex-venv

@@ -5,3 +5,4 @@ template.*
 __pycache__
 pythontex-*
 *.pytxcode
+mktex-venv
