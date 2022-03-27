@@ -1,4 +1,5 @@
-template.pdf
+template.*
+!template.tex
 *.docx
 __pycache__
 pythontex-*
