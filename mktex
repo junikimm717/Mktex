@@ -72,6 +72,8 @@ create() {
       ;;
     esac
   done
+  # update syncthing ignore db (if command exists)
+  command -V stupdate && stupdate
 }
 
 # pull the build image from the docker registry
