@@ -1,6 +1,0 @@
-template.pdf
-*.docx
-__pycache__
-pythontex-*
-*.pytxcode
-mktex-venv
