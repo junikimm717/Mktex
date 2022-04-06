@@ -13,7 +13,7 @@ RUN apk update && \
     make
 
 RUN apk add python3 py3-pygments \
-    py3-scipy py3-numpy
+    py3-scipy py3-numpy py3-matplotlib
 
 WORKDIR /files
 
