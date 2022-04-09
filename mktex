@@ -98,14 +98,34 @@ docker_tests() {
   fi
 }
 
+# move up the directory structure until a Makefile is found.
+find_makefile() {
+  DIRS="$(pwd)"
+  while true; do
+    if test -f "$(pwd)/Makefile"; then
+      break
+    fi
+    if [ "$(pwd)" = "/" ]; then
+      echo "No Makefile found. The following directories were searched in the following order:"
+      echo "$DIRS"
+      exit 1
+    fi
+    cd .. || exit 1
+    DIRS="$DIRS
+$(pwd)"
+  done
+}
+
 # build a pdf of a latex template using the pulled docker image.
 build() {
   docker_tests
+  find_makefile
   docker run -u "$(id -u):$(id -g)" -v  "$(pwd)":/files --rm "$DOCKER_IMAGE"
 }
 
 pyinstall() {
   docker_tests
+  find_makefile
   case "$1" in
     -h|--help)
       cat "$MKTEX_DIR/manual/pyinstall.txt"
@@ -120,6 +140,7 @@ pyinstall() {
 
 watch() {
   docker_tests
+  find_makefile
   docker run -u "$(id -u):$(id -g)" -it -v  "$(pwd)":/files --rm "$DOCKER_IMAGE" watch
 }
 
