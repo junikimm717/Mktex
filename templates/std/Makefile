@@ -14,7 +14,7 @@ docx: $(WORDTARGETS)
 
 
 clean:
-	rm -rf *.aux *.log $(PDFTARGETS) $(WORDTARGETS)
+	ls template.* | grep -vE "^template\.(bib|tex)$$" | xargs -r rm -rf
 
 junk:
 	rm -rf *.aux *.log
