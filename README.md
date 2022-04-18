@@ -20,6 +20,24 @@ $PATH variable, as such to your bashrc or zshrc:
 export PATH=(absolute path to mktex):$PATH
 ```
 
+## Configuration
+
+The following environmental variables are set:
+
+```sh
+# This is not configurable.
+MKTEX_DIR="$(dirname "$(realpath "$0")")"
+
+# configurable, directory where templates are stored
+MKTEX_TEMPLATE_DIR="$MKTEX_DIR/templates"
+
+# configurable, docker image for mktex to build from
+MKTEX_DOCKER_IMAGE=junikimm717/mktex-build
+
+# configurable, command for mktex to run after creating a template.
+MKTEX_HOOK=
+```
+
 ## Makefile requirements
 
 Every template must have a Makefile with the following phony targets:

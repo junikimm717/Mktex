@@ -1,11 +1,17 @@
 #!/bin/sh
 
-# docker image to be pulled.
-DOCKER_IMAGE=junikimm717/mktex-build
 # directory where mktex resides.
 MKTEX_DIR="$(dirname "$(realpath "$0")")"
-# directory where templates are stored.
-TEMPLATE_DIR="$MKTEX_DIR/templates"
+
+if test -z "$MKTEX_TEMPLATE_DIR"; then
+  # directory where templates are stored.
+  MKTEX_TEMPLATE_DIR="$MKTEX_DIR/templates"
+fi
+
+if test -z "$MKTEX_DOCKER_IMAGE"; then
+  # docker image to be pulled. Initialize only if not already specified.
+  MKTEX_DOCKER_IMAGE=junikimm717/mktex-build
+fi
 
 # function to generate a single directory from a template.
 gen_template() {
@@ -15,7 +21,7 @@ gen_template() {
     echo "$DIR already exists.";
     exit 1;
   fi
-  cp -R "$TEMPLATE_DIR"/"$TEMPLATE" "$DIR"
+  cp -R "$MKTEX_TEMPLATE_DIR"/"$TEMPLATE" "$DIR"
   # move into our newly created directory
   cd "$1" || exit
   for FILE in template.*; do
@@ -48,7 +54,7 @@ create() {
           echo "Empty template name."
           exit 1;
         # template does not exist
-        elif ! test -d  "$TEMPLATE_DIR"/"$1"; then
+        elif ! test -d  "$MKTEX_TEMPLATE_DIR"/"$1"; then
           echo "Template $1 does not exist."
           exit 1;
         fi
@@ -72,8 +78,9 @@ create() {
       ;;
     esac
   done
-  # update syncthing ignore db (if command exists)
-  command -V stupdate && stupdate
+  if ! test -z "$MKTEX_HOOK"; then
+    $MKTEX_HOOK
+  fi
 }
 
 # pull the build image from the docker registry
@@ -82,7 +89,7 @@ pull() {
     echo "docker does not exist on your system."
     exit 127
   fi
-  docker pull "$DOCKER_IMAGE"
+  docker pull "$MKTEX_DOCKER_IMAGE"
   exit
 }
 
@@ -92,7 +99,7 @@ docker_tests() {
     echo "docker does not exist on your system."
     exit 127
   fi
-  if ! docker image ls | grep "$DOCKER_IMAGE" > /dev/null; then
+  if ! docker image ls | grep "$MKTEX_DOCKER_IMAGE" > /dev/null; then
     echo "The build image does not locally exist. Run \`mktex pull\` to install it."
     exit 127
   fi
@@ -120,7 +127,7 @@ $(pwd)"
 build() {
   docker_tests
   find_makefile
-  docker run -u "$(id -u):$(id -g)" -v  "$(pwd)":/files --rm "$DOCKER_IMAGE"
+  docker run -u "$(id -u):$(id -g)" -v  "$(pwd)":/files --rm "$MKTEX_DOCKER_IMAGE"
 }
 
 pyinstall() {
@@ -132,7 +139,7 @@ pyinstall() {
       exit 1
     ;;
     *)
-    docker run -u "$(id -u):$(id -g)" -v "$(pwd)":/files --rm "$DOCKER_IMAGE" \
+    docker run -u "$(id -u):$(id -g)" -v "$(pwd)":/files --rm "$MKTEX_DOCKER_IMAGE" \
     pyinstall "$@"
     ;;
   esac
@@ -141,12 +148,12 @@ pyinstall() {
 watch() {
   docker_tests
   find_makefile
-  docker run -u "$(id -u):$(id -g)" -it -v  "$(pwd)":/files --rm "$DOCKER_IMAGE" watch
+  docker run -u "$(id -u):$(id -g)" -it -v  "$(pwd)":/files --rm "$MKTEX_DOCKER_IMAGE" watch
 }
 
 # list all currently available templates
 lstemplates() {
-  cd "$TEMPLATE_DIR" || (echo "$TEMPLATE_DIR is unreachable"; exit 1;)
+  cd "$MKTEX_TEMPLATE_DIR" || (echo "$MKTEX_TEMPLATE_DIR is unreachable"; exit 1;)
   echo *;
 }
 
