@@ -21,6 +21,10 @@ gen_template() {
     echo "$DIR already exists.";
     exit 1;
   fi
+  if ! test -w "$MKTEX_TEMPLATE_DIR"/"$TEMPLATE"; then
+    echo "$MKTEX_TEMPLATE_DIR/$TEMPLATE is not writable."
+    exit 1
+  fi
   cp -R "$MKTEX_TEMPLATE_DIR"/"$TEMPLATE" "$DIR"
   # move into our newly created directory
   cd "$1" || exit
