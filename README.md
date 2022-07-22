@@ -1,5 +1,7 @@
 # Mktex
 
+**Note: Consider using [texbld](https://github.com/texbld/texbld) instead.**
+
 mktex is a POSIX-compliant shell script (verified with shellcheck) created by
 Juni Kim to quickly work with pre-determined latex templates within a CLI
 environment.
